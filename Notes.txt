@@ -1,0 +1,7 @@
+# status Codes 
+
+1. 100 - 199 : Informational response  
+2. 200 - 299 : Success response
+3. 300 - 399 : Redirection message
+4. 400 - 499 : Client side error
+5. 500 - 599 : Server side Error 

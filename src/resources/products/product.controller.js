@@ -1,0 +1,92 @@
+import productModel from "./product.model.js";
+
+
+export default class ProductController {
+  
+  getAllProducts(req, res){
+    try {
+      let products = productModel.getAllProducts();
+      return res.status(200).json({
+        success : true,
+        data : products
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success:false,
+        data:[],
+        message:'Internal server error'
+      });
+    }  
+  }
+
+  getProductWithID(req, res){
+    try {
+      let {id} = req.params;
+      id= Number(id);
+      if(Number.isNaN(id)){
+        return res.status(400).json({
+          success:false,
+          msg:'Invalid product ID'
+        })
+      }
+      const productByID = productModel.getProductByID(id);
+      return res.status(200).json({
+        success:true,
+        data:productByID
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({
+        success:false,
+        data:[],
+        message:"Internal server error"
+      });
+    }
+  }
+
+  addProduct(req, res){
+    const {name, desc, category, price, imgURL, size} = req.body;
+    
+    // put validation later here...
+    if(!name || !desc || !category || !imgURL || !size){
+      return res.status(400).json({
+        success:false,
+        message:"Invalid inputs"
+      })
+    }
+
+    if(price < 0){
+      return res.status(400).json({
+        success:false,
+        message:"Price cannot be negative"
+      })
+    }
+
+    if(!productModel.isValidCategory(category)){
+      return res.status(400).json({
+        success:false,
+        message:"Incorrect Category"
+      })
+    }
+
+    const product_obj = {
+      name:name,
+      desc:desc,
+      category:category,
+      price:price,
+      imgURL:imgURL,
+      size:size
+    }
+
+    const obj_created = productModel.addNewProduct(product_obj);
+
+    if(obj_created){
+      return res.status(200).json({
+        success:true,
+        message:"Product created"
+      })
+    }
+
+  }
+}
