@@ -1,5 +1,9 @@
 import validator from 'validator';
 import UserModel from './user.model.js';
+import dotenv from 'dotenv';
+dotenv.config();
+import jwt from 'jsonwebtoken';
+
 
 export default class UserController {
   // Register / Sign Up
@@ -53,10 +57,21 @@ export default class UserController {
       password:password
     }
 
+    //process.env.SECRET_KEY;
+
+    let payload = {   // payload creation
+      email:user_obj.email,
+    }  
+
+    let token = jwt.sign(payload, process.env.SECRET_KEY,{expiresIn:6000}); //token expiry in 6000 second
+    console.log(token);
+    console.log(process.env.SECRET_KEY);
+
     if(UserModel.userLoginAuthentication(user_obj)){
       return res.status(200).json({
         success:true,
-        message:'user login successful'
+        message:'user login successful',
+        token:token
       })
     } else {
       return res.status(400).json({

@@ -16,6 +16,16 @@ patch : it updates the particular property
 Authentication 
 
 1. Basic Authentication : Each request should have username and password.
-2. API Keys  :
-3. O-Auth :
-4. JWT :
+  step1 : send credentials in every request (base64 encoding is done in postman)
+
+2. API Keys  : Kuch nhi bs ek unique key generate kr dete h aur woh credentials jaisa work krega, header me rehga key
+3. O-Auth : sign in with google joh hota h woh isko follow krte h, just bcz google k pass sab data h apna toh verification easy hota h.
+4. JWT : (Json Web Token) :
+
+ header ; payload ; signature
+
+
+Encoding can be decoded...!
+
+
+Encoding versus Encryption versus Hashing

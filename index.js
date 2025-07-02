@@ -2,6 +2,7 @@ import express from 'express';
 import productRouter from './src/resources/products/product.routes.js';
 import userRouter from './src/resources/users/user.routes.js';
 import basicAuth from './src/middlewares/basicAuthorization.js';
+import jwtauth from './src/middlewares/jwtAuth.js';
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use('/product', productRouter);
 app.use('/user', userRouter);
 
-app.get('/test', basicAuth, (req, res)=>{
+app.post('/test', jwtauth, (req, res)=>{
   return res.status(200).json({
     success:true,
     message:"all good"
