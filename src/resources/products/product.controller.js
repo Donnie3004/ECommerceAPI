@@ -89,4 +89,55 @@ export default class ProductController {
     }
 
   }
+
+  filterProduct(req, res){
+    console.log("here");
+    try {
+      let {minPrice, maxPrice, category} = req.query; // it's not post request; it's a get request that's why req.query
+
+      //validations
+      minPrice = Number(minPrice);
+      if(Number.isNaN(minPrice) || minPrice < 0){
+        return res.status(400).json({
+          success:false,
+          message:"Price should be a number and greater or equal to 0"
+        })
+      }
+
+      maxPrice = Number(maxPrice);
+      if(Number.isNaN(maxPrice)){
+        return res.status(400).json({
+          success:false,
+          message:"Price should be a number"
+        })
+      }
+
+      if(minPrice > maxPrice){
+        return req.status(400).json({
+          success:false,
+          message:"min price should be smaller than max price"
+        })
+      }
+
+      if(!category || !productModel.isValidCategory(category)){
+        return req.status(400).json({
+          success:false,
+          message:"Not a valid category"
+        })
+      }
+
+      let products = productModel.productsFilter(minPrice, maxPrice, category);
+
+      return res.status(200).json({
+        success:true,
+        data:products
+      })
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success:false,
+        message:'Internal server error'
+      })
+    }
+  }
 }

@@ -5,3 +5,17 @@
 3. 300 - 399 : Redirection message
 4. 400 - 499 : Client side error
 5. 500 - 599 : Server side Error 
+
+
+put vs patch 
+
+put: it updated the whole object's data 
+patch : it updates the particular property 
+
+
+Authentication 
+
+1. Basic Authentication : Each request should have username and password.
+2. API Keys  :
+3. O-Auth :
+4. JWT :

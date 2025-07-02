@@ -38,6 +38,16 @@ export default class productModel {
     }
   }
 
+  static productsFilter(minPrice, maxPrice, category){
+    let result = products.filter((item) => {
+      if(item.price >= minPrice && item.price <= maxPrice && item.category === category){
+        return true;
+      }
+      return false;
+    })
+    return result;
+  }
+
 }
 
 var products = [
