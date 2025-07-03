@@ -1,5 +1,5 @@
 export default class productModel {
-  constructor(_id, _name, _desc, _category, _price, _imgURL, _size) {
+  constructor(_id, _name, _desc, _category, _price, _imgURL, _size, _qty) {
     this.id = _id;
     this.name = _name;
     this.desc = _desc;
@@ -7,6 +7,8 @@ export default class productModel {
     this.price = _price;
     this.imgURL = _imgURL;
     this.size = _size;
+    this.qty = _qty;
+    this.rating = [];
   }
 
   static getAllProducts(){
@@ -48,13 +50,42 @@ export default class productModel {
     return result;
   }
 
+  static ratingProduct(userID, productID, rating){
+    for(let i=0;i<products.length;i++){
+      if(products[i].id === productID){
+        let user_exists = products[i].rating.find((obj) => obj.userID === userID);
+        if(user_exists){
+          user_exists.ratingParam = rating;
+        } else {
+          let rating_obj = {
+            userID:userID,
+            ratingParam:rating
+          }
+          products[i].rating.push(rating_obj);
+        }
+        return products[i];
+      }
+    }
+    return false;
+  }
+
+  static reduceQty(product_id, qty){
+    let required_product = products.find(obj => obj.id === product_id);
+    if(required_product.qty - qty < 0){
+      return false;
+    } 
+    required_product.qty = required_product.qty - qty;
+    console.log("Qty : ", required_product.qty);
+    return true;
+  }
+
 }
 
 var products = [
-  new productModel(1, "T-shirt", '100% cotton t-shirt', 'Upperwear', 700, 'image1.png', ['XS', 'S', 'M', 'L', 'XL']),
-  new productModel(2, "Jeans", '100% pure denim', 'Bottomwear', 1000, 'image2.png', ['XS', 'S', 'M', 'L', 'XL']),
-  new productModel(3, "Cargo", '100% cotton', 'Bottomwear', 1500, 'image3.png', ['XS', 'S', 'M', 'L', 'XL']),
-  new productModel(4, "Nike Shoe", 'mesh type', 'footwear', 7500, 'image4.png', ['UK-5', 'UK-6', 'UK-7', 'UK-8', 'UK-9'])
+  new productModel(1, "T-shirt", '100% cotton t-shirt', 'Upperwear', 700, 'image1.png', ['XS', 'S', 'M', 'L', 'XL'], 100),
+  new productModel(2, "Jeans", '100% pure denim', 'Bottomwear', 1000, 'image2.png', ['XS', 'S', 'M', 'L', 'XL'], 50),
+  new productModel(3, "Cargo", '100% cotton', 'Bottomwear', 1500, 'image3.png', ['XS', 'S', 'M', 'L', 'XL'], 10),
+  new productModel(4, "Nike Shoe", 'mesh type', 'footwear', 7500, 'image4.png', ['UK-5', 'UK-6', 'UK-7', 'UK-8', 'UK-9'], 5)
 ];
 
 var categories = ['Upperwear', 'Bottomwear', 'Footwear'];

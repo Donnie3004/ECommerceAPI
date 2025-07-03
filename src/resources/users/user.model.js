@@ -43,5 +43,5 @@ export default class UserModel {
 
 let users = [
   new UserModel(1, "arbaz", "arbaz@gmail.com", "12345", "admin"),
-  new UserModel(1, "sheikh", "sheikh@gmail.com", "12345", "customer")
+  new UserModel(2, "sheikh", "sheikh@gmail.com", "12345", "customer")
 ]

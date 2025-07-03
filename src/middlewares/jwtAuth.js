@@ -23,7 +23,7 @@ const jwtauth = (req, res, next) => {
             message:'user not found'
           })
         }
-
+       // console.log(user_obj);
         req.user = user_obj;
         next();
 

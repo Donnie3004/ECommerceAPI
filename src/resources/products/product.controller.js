@@ -140,4 +140,41 @@ export default class ProductController {
       })
     }
   }
+
+  insertRating(req, res){
+    try {
+      let {productID, rating} = req.body;
+      productID = Number(productID);
+      rating = Number(rating);
+
+      if(Number.isNaN(productID)){
+        return res.status(400).json({
+          success:false,
+          message:'Enter valid inputs'
+        });
+      }
+
+      // console.log("Controller : ", req.user);
+      let user_id = req.user[0].id;
+
+      let rating_updated = productModel.ratingProduct(user_id, productID, rating);
+
+      if(!rating_updated){
+        return res.status(404).json({
+          success:false,
+          message: 'Product not found'
+        });
+      }
+      return res.status(202).json({
+        success:true,
+        message: rating_updated
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success:false,
+        message:'Internal server error'
+      });
+    }
+  }
 }
