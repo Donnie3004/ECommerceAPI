@@ -1,3 +1,5 @@
+import { getDB } from "../../config/mongoDBServer.js";
+
 export default class UserModel {
   constructor(_id, _name, _email, _password, _type) {
     this.id = _id;
@@ -7,10 +9,14 @@ export default class UserModel {
     this.role = 'customer'; // since we don't take user type from frontend; it will be promoted
   }
 
-  static createUser(obj){
+  static async createUser(obj){
     const user = new UserModel(users.length+1, obj.name, obj.email, obj.password);
-    users.push(user);
-    return user;
+    // users.push(user);
+    console.log(user);
+    let db = getDB();
+    let resp = await db.collection('NewCollection').insertOne(user);
+    // let finalResp = await resp.json();
+    return resp;
   }
 
   static getUserByEmail(_email){

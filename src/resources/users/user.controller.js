@@ -3,11 +3,13 @@ import UserModel from './user.model.js';
 import dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
+import { writeLog } from '../../utils.js';
 
 
 export default class UserController {
   // Register / Sign Up
-  newUserRegister(req, res){
+  async newUserRegister(req, res){
+    writeLog("---------Inside newUserRegister--------");
     try {
       const {name, email, password} = req.body;
       // Validation 
@@ -29,13 +31,13 @@ export default class UserController {
         password:password,
         email:email
       }
-      const user_created = UserModel.createUser(user_obj);
-      let user_created_final = {...user_created};
-      user_created_final.password = '************';
+      const user_created = await UserModel.createUser(user_obj);
+      // let user_created_final = {...user_created};
+      // user_created_final.password = '************';
       if(user_created){
         return res.status(200).json({
           success:true,
-          data:user_created_final
+          data:user_created
         })
       }
     } catch (error) {

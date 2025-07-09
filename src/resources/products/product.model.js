@@ -1,3 +1,5 @@
+import { getDB } from "../../config/mongoDBServer.js";
+
 export default class productModel {
   constructor(_id, _name, _desc, _category, _price, _imgURL, _size, _qty) {
     this.id = _id;
@@ -11,8 +13,10 @@ export default class productModel {
     this.rating = [];
   }
 
-  static getAllProducts(){
-    return products;
+  static async getAllProducts(){
+    let db = getDB();
+    let all_products = await db.collection(collectionName).find().toArray();
+    return all_products;
   }
 
   static getProductByID(_id){
@@ -29,11 +33,13 @@ export default class productModel {
     return categories.indexOf(_category) >= 0;
   }
 
-  static addNewProduct(obj){
+  static async addNewProduct(obj){
     try {
       const new_product = new productModel(products.length + 1, obj.name, obj.desc, obj.category, obj.price, obj.imgURL, obj.size);
-      products.push(new_product);
-      return true;
+      let db = getDB();
+      let resp = await db.collection(collectionName).insertOne(new_product); 
+      // products.push(new_product);
+      return resp;
     } catch (error) {
       console.error(error);
       return false
@@ -89,3 +95,5 @@ var products = [
 ];
 
 var categories = ['Upperwear', 'Bottomwear', 'Footwear'];
+
+const collectionName = "Products";

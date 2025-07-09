@@ -35,7 +35,7 @@ const jwtauth = (req, res, next) => {
         })
       }
     } 
-  } else {
+  } else   {
     return res.status(400).json({
         success:false,
         message:'Unauthorized'

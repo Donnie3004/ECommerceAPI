@@ -1,11 +1,18 @@
 import productModel from "./product.model.js";
+import ProductRepo from "./product.repository.js";
 
 
 export default class ProductController {
+
+  constructor(){
+     this.repo = new ProductRepo();
+  }
   
-  getAllProducts(req, res){
+  async getAllProducts(req, res){
     try {
-      let products = productModel.getAllProducts();
+      // let products = await productModel.getAllProducts();
+      let products = await this.repo.getAll();
+      console.log("products : ", products);
       return res.status(200).json({
         success : true,
         data : products
@@ -20,17 +27,19 @@ export default class ProductController {
     }  
   }
 
-  getProductWithID(req, res){
+  async getProductWithID(req, res){
     try {
       let {id} = req.params;
-      id= Number(id);
-      if(Number.isNaN(id)){
-        return res.status(400).json({
-          success:false,
-          msg:'Invalid product ID'
-        })
-      }
-      const productByID = productModel.getProductByID(id);
+      // id= Number(id);
+      // if(Number.isNaN(id)){
+      //   return res.status(400).json({
+      //     success:false,
+      //     msg:'Invalid product ID'
+      //   })
+      // }
+      //const productByID = productModel.getProductByID(id);
+      let productByID = await this.repo.getProductByID(id);
+      console.log(productByID);
       return res.status(200).json({
         success:true,
         data:productByID
@@ -45,7 +54,7 @@ export default class ProductController {
     }
   }
 
-  addProduct(req, res){
+  async addProduct(req, res){
     const {name, desc, category, price, imgURL, size} = req.body;
     
     // put validation later here...
@@ -79,13 +88,50 @@ export default class ProductController {
       size:size
     }
 
-    const obj_created = productModel.addNewProduct(product_obj);
+    //const obj_created = await productModel.addNewProduct(product_obj);
 
-    if(obj_created){
+    const obj_created = await this.repo.createProduct(product_obj);
+
+
+    if(obj_created.acknowledged){
       return res.status(200).json({
         success:true,
         message:"Product created"
       })
+    }
+
+  }
+
+  async updateProduct(req, res){
+    let {name, desc, category, price, imgURL, size} = req.body;
+    let {id} = req.params;
+    const product_obj = {
+      name:name,
+      desc:desc,
+      category:category,
+      price:price,
+      imgURL:imgURL,
+      size:size
+    }
+    let updateStatus = await this.repo.updateProduct(id, product_obj);
+    console.log(updateStatus);
+    if(updateStatus){
+      return res.status(200).json({
+        success:true,
+        message:"Product Updated"
+      })
+    }
+
+  }
+
+  async deleteProductByID(req, res){
+    let {id} = req.params;
+    let deleteStatus = await this.repo.deleteProduct(id);
+    if(deleteStatus.acknowledged){
+      return res.status(200).json({
+        success:true,
+        message:deleteStatus
+      });
     }
 
   }
