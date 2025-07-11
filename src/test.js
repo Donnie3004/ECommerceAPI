@@ -18,7 +18,7 @@ async function init() {
   } catch (error) {
     console.error(error);
   }
-  console.log("Verifying : ", await verifyPassword(password, resp));
+  console.log("Verifying : ", await verifyPassword(password, resp));// git commit -m "4th Commit" ; git push -u origin main        
 
 }
 

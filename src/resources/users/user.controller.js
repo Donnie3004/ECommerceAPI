@@ -20,26 +20,29 @@ export default class UserController {
         })
       }
       // put more validations for name email and password as per requirement.
-      if(!UserModel.getUserByEmail(email)){
+      let modelObj = new UserModel();
+      let email_check = await modelObj.getUserByEmail(email); 
+      if(!email_check){
         return res.status(400).json({
-          success:false,
+          success: email_check,
           message: `Email : ${email} already exists..!`
         })
       }
+
       let user_obj = {
         name:name,
         password:password,
         email:email
       }
-      const user_created = await UserModel.createUser(user_obj);
-      // let user_created_final = {...user_created};
-      // user_created_final.password = '************';
-      if(user_created){
+
+      const user_created = await modelObj.createUser(user_obj);
+      if(user_created.acknowledged){
         return res.status(200).json({
           success:true,
-          data:user_created
-        })
+          result:user_created
+        });
       }
+      throw new Error("DB error..!");
     } catch (error) {
       console.error(error);
       return res.status(500).json({
@@ -48,8 +51,10 @@ export default class UserController {
       })
     } 
   }
+
+  
   // Login / Sign in 
-  userLogin(req, res){
+  async userLogin(req, res){
     const {email, password} = req.body;
 
     //put validations here..!
@@ -69,7 +74,9 @@ export default class UserController {
     console.log(token);
     console.log(process.env.SECRET_KEY);
 
-    if(UserModel.userLoginAuthentication(user_obj)){
+    let modelObj = new UserModel();
+    let user_login = await modelObj.userLoginAuthentication(user_obj);
+    if(user_login){
       return res.status(200).json({
         success:true,
         message:'user login successful',
@@ -78,7 +85,7 @@ export default class UserController {
     } else {
       return res.status(400).json({
         success:false,
-        message:'user login unsuccessful'
+        message:'user login unsucessful' //// product?.rating?.find
       })
     }
   }

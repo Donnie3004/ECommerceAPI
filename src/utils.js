@@ -19,7 +19,6 @@ export async function writeLog(logData) {
 
 export async function hashingPassword(password, saltRound = 10) {
   let salt = await bcrypt.genSalt(saltRound);
-  console.log("Salt : ", salt);
   let hash = await bcrypt.hash(password,salt);
   return hash;
 }

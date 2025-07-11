@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import UserModel from '../resources/users/user.model.js';
 dotenv.config();
 
-const jwtauth = (req, res, next) => {
+const jwtauth = async (req, res, next) => {
   // Read from headers
   if(req.headers && req.headers.authorization){
     console.log(req.headers);
@@ -15,13 +15,15 @@ const jwtauth = (req, res, next) => {
 
         // check whether the user is same or not been deleted from DB;
         let email = payload.email;
-        let user_obj = UserModel.getUserByEmail(email);
+        let modelObj = new UserModel();
+        let user_obj = await modelObj.getUserByEmail(email);
+        console.log("Jwt obj : ", user_obj);
 
         if(!user_obj){
           return res.status(400).json({
             success:false,
             message:'user not found'
-          })
+          });
         }
        // console.log(user_obj);
         req.user = user_obj;
@@ -41,7 +43,7 @@ const jwtauth = (req, res, next) => {
         message:'Unauthorized'
     })
   }
-  next();
+  //next();
 }
 
 

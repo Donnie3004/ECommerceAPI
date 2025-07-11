@@ -9,8 +9,8 @@ router.get('/', ProductController.getAllProducts.bind(ProductController));
 router.get('/filter', ProductController.filterProduct); // this should be above /:id routes becoz in node.js we move from specific to gen.
 router.get('/:id', ProductController.getProductWithID.bind(ProductController));
 router.post('/',  ProductController.addProduct.bind(ProductController)); // jwtauth
-router.post('/rating', jwtauth, ProductController.insertRating);
-router.post('/:id',  ProductController.updateProduct.bind(ProductController)); // jwtauth
+router.post('/rating', jwtauth, ProductController.insertRating.bind(ProductController));// jwtauth, 
+router.post('/:id', jwtauth,  ProductController.updateProduct.bind(ProductController)); // jwtauth
 router.delete('/productDelete/:id', ProductController.deleteProductByID.bind(ProductController));
 
 // router.put('/id',);

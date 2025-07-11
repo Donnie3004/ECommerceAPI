@@ -12,7 +12,6 @@ export default class ProductController {
     try {
       // let products = await productModel.getAllProducts();
       let products = await this.repo.getAll();
-      console.log("products : ", products);
       return res.status(200).json({
         success : true,
         data : products
@@ -103,6 +102,7 @@ export default class ProductController {
   }
 
   async updateProduct(req, res){
+    console.log("here..at update");
     let {name, desc, category, price, imgURL, size} = req.body;
     let {id} = req.params;
     const product_obj = {
@@ -114,12 +114,16 @@ export default class ProductController {
       size:size
     }
     let updateStatus = await this.repo.updateProduct(id, product_obj);
-    console.log(updateStatus);
     if(updateStatus){
       return res.status(200).json({
         success:true,
         message:"Product Updated"
       })
+    }else{
+       return res.status(400).json({
+        success:false,
+        message:"Update failed"
+      });
     }
 
   }
@@ -187,25 +191,16 @@ export default class ProductController {
     }
   }
 
-  insertRating(req, res){
+  async insertRating(req, res){
     try {
-      let {productID, rating} = req.body;
-      productID = Number(productID);
-      rating = Number(rating);
+      let {rating, productID} = req.body;
+      rating = Number(rating); 
+      let user_id = req.user._id.toString();
 
-      if(Number.isNaN(productID)){
-        return res.status(400).json({
-          success:false,
-          message:'Enter valid inputs'
-        });
-      }
-
-      // console.log("Controller : ", req.user);
-      let user_id = req.user[0].id;
-
-      let rating_updated = productModel.ratingProduct(user_id, productID, rating);
-
-      if(!rating_updated){
+      //let rating_updated = productModel.ratingProduct(user_id, productID, rating);
+      let rating_updated = await this.repo.rateProduct(user_id, productID, rating);
+      if(rating_updated && !rating_updated.acknowledged){
+        console.log("Sending 404 response");
         return res.status(404).json({
           success:false,
           message: 'Product not found'
@@ -216,11 +211,13 @@ export default class ProductController {
         message: rating_updated
       });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        success:false,
-        message:'Internal server error'
-      });
+      console.error("Error : ", error);
+      if (!res.headersSent) {
+        return res.status(500).json({
+          success: false,
+          message: 'Internal server error'
+        });
+      }
     }
   }
 }
